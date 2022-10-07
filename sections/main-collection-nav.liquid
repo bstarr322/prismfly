@@ -1,0 +1,69 @@
+{%- if section.blocks.size > 0 -%}
+  {{ 'component-collection-nav.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'collection-nav.js' | asset_url }}" defer="defer"></script>
+
+  <collection-nav>
+    <div class="page-width">
+      <ul class="small-hide medium-hide">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.collection != blank -%}
+            {%- assign nav_collection = collections[block.settings.collection] -%}
+            <li>
+              <a class="{% if request.path == nav_collection.url %}header__active-menu-item{% endif %} link header__menu-item"
+                href="{{-nav_collection.url-}}" 
+                data-plp-nav-item>
+                {{- block.settings.nav_title | default: nav_collection.title -}}
+              </a>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+
+      <select class="large-up-hide" data-nav-select>
+        {%- for block in section.blocks -%}
+          {%- if block.settings.collection != blank -%}
+            {%- assign nav_collection = collections[block.settings.collection] -%}
+            <option value="{{-nav_collection.url-}}" 
+              {% if request.path == nav_collection.url %}selected{% endif %}>
+              {{- block.settings.nav_title | default: nav_collection.title -}}
+            </option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+    </div>
+  </collection-nav>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Collection Navigation",
+  "class": "section collection-nav",
+  "blocks": [
+    {
+      "type": "plp_nav",
+      "name": "Plp Nav Item",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "nav_title",
+          "label": "Custom Collection Title"
+        }
+      ]
+    }
+  ],
+  "templates": [
+    "collection"
+  ],
+  "presets": [
+    {
+      "name": "Collection Navigation"
+    }
+  ]
+}
+{% endschema %}
